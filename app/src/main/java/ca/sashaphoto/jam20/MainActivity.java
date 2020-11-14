@@ -1,18 +1,23 @@
 package ca.sashaphoto.jam20;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Toast;
+
+import com.google.android.material.snackbar.Snackbar;
 
 public class MainActivity extends AppCompatActivity {
     SeekBar howYouFeltSlider;
     JamBackend backend;
     Button button_imbored;
     EditText editTextFeedback;
+
     //AppDatabase db = Room.databaseBuilder(getApplicationContext(),AppDatabase.class, "database-name").build();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getSuggestion() {
-        Toast.makeText(getBaseContext(),backend.getSuggestion(),Toast.LENGTH_SHORT).show();
+        Toast.makeText(getBaseContext(),backend.getSuggestion(),Toast.LENGTH_LONG).show();
+
     }
 }
