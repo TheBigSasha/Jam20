@@ -22,7 +22,7 @@ public class JamBackend {
     private static JamBackend ref = new JamBackend();
 
 
-    public String getSuggestion() {
+    private String getSuggestion() {
         String string;
         if (list.size() > 0) {
             int i = rand.nextInt(list.size());
@@ -40,7 +40,11 @@ public class JamBackend {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public String getCurrentSuggestion(){
-        return SuggestionItem.get().getContent();
+        if(SuggestionItem.hasCurrent()) {
+            return SuggestionItem.get().getContent();
+        }else{
+            return fetchNewSuggestion();
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -86,6 +90,10 @@ class SuggestionItem{
         content = suggestion;
         created = LocalDateTime.now();
         items.put(suggestion,this);
+    }
+
+    public static boolean hasCurrent(){
+        return activeItem != null;
     }
 
     public String show(){

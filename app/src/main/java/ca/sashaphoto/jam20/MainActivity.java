@@ -1,8 +1,10 @@
 package ca.sashaphoto.jam20;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -31,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getSuggestion() {
-        Toast.makeText(getBaseContext(),backend.getSuggestion(),Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(),backend.getCurrentSuggestion(),Toast.LENGTH_LONG).show();
 
     }
 }
