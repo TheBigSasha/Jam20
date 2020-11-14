@@ -46,9 +46,12 @@ public class JamBackend {
 @RequiresApi(api = Build.VERSION_CODES.O)
 class SuggestionItem{
     private static HashMap<String, SuggestionItem> items = new HashMap<>();
+    private static ArrayList<SuggestionItem> badItems = new ArrayList<>();
+    private static ArrayList<SuggestionItem> goodItems = new ArrayList<>();
     private LocalDateTime created;
     private LocalDateTime firstShown;
     private LocalDateTime firstDismissed;
+    private static SuggestionItem activeItem;
     private String content;
 
     public LocalDateTime getCreated() {
@@ -67,7 +70,7 @@ class SuggestionItem{
         return content;
     }
 
-    public SuggestionItem(String suggestion){
+    protected SuggestionItem(String suggestion){
         content = suggestion;
         created = LocalDateTime.now();
         items.put(suggestion,this);
@@ -77,19 +80,83 @@ class SuggestionItem{
         if(firstShown == null){
             firstShown = LocalDateTime.now();
         }
+        activeItem = this;
         return content;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SuggestionItem that = (SuggestionItem) o;
+        return Objects.equals(created, that.created) &&
+                Objects.equals(firstShown, that.firstShown) &&
+                Objects.equals(firstDismissed, that.firstDismissed) &&
+                content.equals(that.content);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(created, firstShown, firstDismissed, content);
+    }
+
+    public boolean isActive(){
+        return this == activeItem;
+    }
+
     public void dismiss(){
+        if(this != activeItem) throw new IllegalArgumentException("Cannot dismiss an inactive item");
         if(firstDismissed == null){
             firstDismissed = LocalDateTime.now();
         }
+        badItems.add(activeItem);
+
+        activeItem = null;
     }
 
-    public static SuggestionItem get(String message){
+    public void dismiss(boolean good){
+        if(this != activeItem) throw new IllegalArgumentException("Cannot dismiss an inactive item");
+        if(firstDismissed == null){
+            firstDismissed = LocalDateTime.now();
+        }
+
+        if(good){
+            goodItems.add(activeItem);
+        }else{
+            badItems.add(activeItem);
+        }
+
+        activeItem = null;
+    }
+
+    public static SuggestionItem getInactive(String message){
         if(items.containsKey(message)) return items.get(message);
 
         return new SuggestionItem(message);
+    }
+
+    public static SuggestionItem create(String message){
+        if(items.containsKey(message)){
+            SuggestionItem item = items.get(message);
+            item.setActive();
+        }
+
+        return new SuggestionItem(message);
+    }
+
+    private void setActive() {
+        firstDismissed = null;
+        firstShown = null;
+        if(activeItem != null) {
+            activeItem.dismiss();
+            activeItem = this;
+        }
+        goodItems.remove(this);
+        badItems.remove(this);
+    }
+
+    public static SuggestionItem get(){
+        return activeItem;
     }
 
 }
