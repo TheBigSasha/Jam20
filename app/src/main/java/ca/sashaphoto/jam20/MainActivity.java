@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        backend = new JamBackend();
+        backend = JamBackend.build();
         howYouFeltSlider = findViewById(R.id.howYouFeltSlider);
         button_imbored = findViewById(R.id.button_imbored);
         editTextFeedback = findViewById(R.id.editTextFeedback);
