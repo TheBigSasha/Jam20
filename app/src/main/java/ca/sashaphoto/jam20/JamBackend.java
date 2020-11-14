@@ -38,6 +38,18 @@ public class JamBackend {
         return string;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public String getCurrentSuggestion(){
+        return SuggestionItem.get().getContent();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public String fetchNewSuggestion(){
+        SuggestionItem.get().dismiss();
+        SuggestionItem.create(getSuggestion());
+        return SuggestionItem.get().getContent();
+    }
+
     public static JamBackend build(){
         if(ref == null) ref = new JamBackend();
         return ref;
