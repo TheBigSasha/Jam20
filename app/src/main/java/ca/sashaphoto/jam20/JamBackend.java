@@ -49,8 +49,9 @@ public class JamBackend {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public String fetchNewSuggestion(){
-        SuggestionItem.get().dismiss();
+        if(SuggestionItem.hasCurrent()) SuggestionItem.get().dismiss();
         SuggestionItem.create(getSuggestion());
+        //TODO: JamWidget.updateAppWidget();
         return SuggestionItem.get().getContent();
     }
 
@@ -90,6 +91,8 @@ class SuggestionItem{
         content = suggestion;
         created = LocalDateTime.now();
         items.put(suggestion,this);
+        if(activeItem != null) activeItem.dismiss();
+        activeItem = this;
     }
 
     public static boolean hasCurrent(){
