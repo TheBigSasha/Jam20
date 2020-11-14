@@ -1,24 +1,28 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     android:padding="@dimen/widget_margin"
-    android:rotationX="50"
-    android:theme="@style/ThemeOverlay.Jam20.AppWidgetContainer">
+    android:theme="@style/Theme.Jam20">
 
-    <TextView
-        android:id="@+id/appwidget_text"
+    <Button
+        android:id="@+id/widgetButton"
+        style="@style/Theme.Jam20"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@color/teal_200"
-        android:contentDescription="@string/appwidget_text"
-        android:text="@string/appwidget_text"
-        android:textColor="?attr/appWidgetTextColor"
-        android:textSize="24sp"
-        android:textStyle="bold|italic" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="15dp"
+        android:background="#FFFFFF"
+        android:backgroundTintMode="add"
+        android:text="@string/i_m_bored"
+        android:textSize="30sp"
+        app:cornerRadius="25dp"
+        app:iconTint="#FFFFFF"
+        app:rippleColor="#D7DF2BFF" />
 </RelativeLayout>
