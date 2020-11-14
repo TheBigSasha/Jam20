@@ -1,5 +1,10 @@
 package ca.sashaphoto.jam20;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class JamBackend {
@@ -37,4 +42,54 @@ public class JamBackend {
         if(ref == null) ref = new JamBackend();
         return ref;
     }
+}
+@RequiresApi(api = Build.VERSION_CODES.O)
+class SuggestionItem{
+    private static HashMap<String, SuggestionItem> items = new HashMap<>();
+    private LocalDateTime created;
+    private LocalDateTime firstShown;
+    private LocalDateTime firstDismissed;
+    private String content;
+
+    public LocalDateTime getCreated() {
+        return created;
+    }
+
+    public LocalDateTime getFirstShown() {
+        return firstShown;
+    }
+
+    public LocalDateTime getFirstDismissed() {
+        return firstDismissed;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public SuggestionItem(String suggestion){
+        content = suggestion;
+        created = LocalDateTime.now();
+        items.put(suggestion,this);
+    }
+
+    public String show(){
+        if(firstShown == null){
+            firstShown = LocalDateTime.now();
+        }
+        return content;
+    }
+
+    public void dismiss(){
+        if(firstDismissed == null){
+            firstDismissed = LocalDateTime.now();
+        }
+    }
+
+    public static SuggestionItem get(String message){
+        if(items.containsKey(message)) return items.get(message);
+
+        return new SuggestionItem(message);
+    }
+
 }
