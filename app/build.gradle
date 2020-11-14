@@ -28,6 +28,7 @@ android {
 }
 
 dependencies {
+    final lottieVersion = '3.5.0'
 
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'com.google.android.material:material:1.1.0'
@@ -45,4 +46,6 @@ dependencies {
     implementation "androidx.room:room-guava:$room_version"
     // optional - Test helpers
     testImplementation "androidx.room:room-testing:$room_version"
+
+    implementation "com.airbnb.android:lottie:$lottieVersion"
 }
