@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Jam20</string>
+    <string name="want_to_chat_about_it">Want to chat about it?</string>
+    <string name="i_m_bored">I\'m Bored!</string>
+    <string name="appwidget_text">Bored!</string>
+    <string name="add_widget">Add widget</string>
 </resources>

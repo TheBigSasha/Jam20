@@ -12,7 +12,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="161dp"
         android:layout_marginTop="341dp"
-        android:text="I'm Bored!"
+        android:rotationX="29"
+        android:text="@string/i_m_bored"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -23,7 +26,7 @@
         android:layout_marginTop="45dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Want to chat about it?"
+        android:text="@string/want_to_chat_about_it"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_imbored" />
@@ -39,4 +42,15 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextFeedback" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/backgrounds/scenic" />
 </androidx.constraintlayout.widget.ConstraintLayout>
