@@ -5,6 +5,7 @@
     android:padding="@dimen/widget_margin"
     android:theme="@style/Theme.Jam20">
 
+
     <TextView
         android:id="@+id/widget_text_view"
         android:layout_width="77dp"

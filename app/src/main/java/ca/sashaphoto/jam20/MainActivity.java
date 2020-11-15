@@ -71,13 +71,19 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected void onPreExecute(){
                 animationView.setVisibility(View.VISIBLE);
-                background.setVisibility(View.GONE);
+                /*background.setVisibility(View.GONE);*/
+                //animationView.playAnimation();
                 whatToDo.setVisibility(View.GONE);
             }
 
             @Override
             protected String doInBackground(Void... voids) {
                 backend.fetchNewSuggestion(wasGood);
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 //TODO: Set image from API!
 return backend.getCurrentSuggestion();
             }
@@ -86,7 +92,7 @@ return backend.getCurrentSuggestion();
             protected void onPostExecute(String result) {
                 whatToDo.setText(result);
                 animationView.setVisibility(View.GONE);
-                background.setVisibility(View.VISIBLE);
+                //background.setVisibility(View.VISIBLE);
                 whatToDo.setVisibility(View.VISIBLE);
             }
 
