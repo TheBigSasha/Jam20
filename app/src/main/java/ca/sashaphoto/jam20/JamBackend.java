@@ -2,8 +2,13 @@ package ca.sashaphoto.jam20;
 
 import android.os.Build;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
+import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -78,26 +83,76 @@ public class JamBackend {
     }
 }
 @RequiresApi(api = Build.VERSION_CODES.O)
+@Entity(tableName = "SuggestedItems")
 class SuggestionItem{
-    private static HashMap<String, SuggestionItem> items = new HashMap<>();
-    private static ArrayList<SuggestionItem> badItems = new ArrayList<>();
-    private static ArrayList<SuggestionItem> goodItems = new ArrayList<>();
-    private LocalDateTime created;
-    private LocalDateTime firstShown;
-    private LocalDateTime firstDismissed;
-    private static SuggestionItem activeItem;
-    private String content;
 
-    public LocalDateTime getCreated() {
+    @NonNull
+    public Boolean getGood() {
+        return isGood;
+    }
+
+    public void setGood(@NonNull Boolean good) {
+        isGood = good;
+    }
+
+
+
+
+        private Boolean isGood;
+
+    public void setCreated(String created) {
+        this.created = created;
+    }
+
+    public void setFirstShown(String firstShown) {
+        this.firstShown = firstShown;
+    }
+
+    public void setFirstDismissed(String firstDismissed) {
+        this.firstDismissed = firstDismissed;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    private String created;
+
+    public String getCreated() {
         return created;
     }
 
-    public LocalDateTime getFirstShown() {
+    public String getFirstShown() {
         return firstShown;
     }
 
-    public LocalDateTime getFirstDismissed() {
+    public String getFirstDismissed() {
         return firstDismissed;
+    }
+
+    private String firstShown;
+        private String firstDismissed;
+        private static SuggestionItem activeItem;
+    @PrimaryKey
+    @NonNull
+    @ColumnInfo(name = "content")
+        private String content;
+
+    public SuggestionItem(@NonNull Boolean isGood ){
+        this.isGood = isGood;
+    }
+
+
+    public Time getTimeCreated() {
+        return Time.valueOf(created);
+    }
+
+    public Time getTimeFirstShown() {
+        return Time.valueOf(firstShown);
+    }
+
+    public Time getTimeFirstDismissed() {
+        return Time.valueOf(firstDismissed);
     }
 
     public String getContent() {
@@ -106,8 +161,10 @@ class SuggestionItem{
 
     protected SuggestionItem(String suggestion){
         content = suggestion;
-        created = LocalDateTime.now();
-        items.put(suggestion,this);
+        created = String.valueOf(LocalDateTime.now().toLocalTime());
+
+        MainActivity.suggestedItemRepository.mItemDao.insert(this);
+
         if(activeItem != null) activeItem.dismiss();
         activeItem = this;
     }
@@ -118,7 +175,7 @@ class SuggestionItem{
 
     public String show(){
         if(firstShown == null){
-            firstShown = LocalDateTime.now();
+            firstShown = String.valueOf(LocalDateTime.now().toLocalTime());
         }
         activeItem = this;
         return content;
@@ -147,38 +204,41 @@ class SuggestionItem{
     public void dismiss(){
         if(this != activeItem) throw new IllegalArgumentException("Cannot dismiss an inactive item");
         if(firstDismissed == null){
-            firstDismissed = LocalDateTime.now();
+            firstDismissed = String.valueOf(LocalDateTime.now().toLocalTime());
         }
-        badItems.add(activeItem);
+        activeItem.isGood = false;
+        MainActivity.suggestedItemRepository.mItemDao.insert(activeItem);
 
         activeItem = null;
+
+
     }
+
 
     public void dismiss(boolean good){
         if(this != activeItem) throw new IllegalArgumentException("Cannot dismiss an inactive item");
         if(firstDismissed == null){
-            firstDismissed = LocalDateTime.now();
+            firstDismissed = String.valueOf(LocalDateTime.now().toLocalTime());
         }
 
         if(good){
-            goodItems.add(activeItem);
+            activeItem.isGood = true;
+            MainActivity.suggestedItemRepository.mItemDao.insert(activeItem);
         }else{
-            badItems.add(activeItem);
+            activeItem.isGood = false;
+            MainActivity.suggestedItemRepository.mItemDao.insert(activeItem);
         }
 
         activeItem = null;
     }
 
-    public static SuggestionItem getInactive(String message){
-        if(items.containsKey(message)) return items.get(message);
-
-        return new SuggestionItem(message);
-    }
 
     public static SuggestionItem create(String message){
-        if(items.containsKey(message)){
-            SuggestionItem item = items.get(message);
+        SuggestionItem item = MainActivity.suggestedItemRepository.mItemDao.getItemByContent(message).getValue();
+        if(item != null){
             item.setActive();
+            activeItem = item;
+            MainActivity.suggestedItemRepository.mItemDao.delete(item);
         }
 
         return new SuggestionItem(message);
@@ -191,8 +251,8 @@ class SuggestionItem{
             activeItem.dismiss();
             activeItem = this;
         }
-        goodItems.remove(this);
-        badItems.remove(this);
+
+        MainActivity.suggestedItemRepository.delete(this);
     }
 
     public static SuggestionItem get(){

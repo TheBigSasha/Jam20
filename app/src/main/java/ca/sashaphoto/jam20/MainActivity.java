@@ -1,15 +1,11 @@
 package ca.sashaphoto.jam20;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.solver.widgets.WidgetContainer;
-import androidx.fragment.app.FragmentFactory;
 
 import android.annotation.SuppressLint;
 import android.appwidget.AppWidgetManager;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Intent;
-import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -18,11 +14,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 
-import java.net.URL;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
@@ -34,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     Button button_happy;
     EditText editTextFeedback;
     TextView whatToDo;
+    static SuggestedItemRepository suggestedItemRepository;
 
     //AppDatabase db = Room.databaseBuilder(getApplicationContext(),AppDatabase.class, "database-name").build();
     @Override
@@ -42,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         Objects.requireNonNull(this.getSupportActionBar()).hide();
         setContentView(R.layout.activity_main);
         backend = JamBackend.build();
+        suggestedItemRepository = new SuggestedItemRepository(getApplication());
         howYouFeltSlider = findViewById(R.id.howYouFeltSlider);
         button_imbored = findViewById(R.id.button_imbored);         //TODO: Swap with a positive and negative response button!
         editTextFeedback = findViewById(R.id.editTextFeedback);
@@ -80,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
             protected String doInBackground(Void... voids) {
                 backend.fetchNewSuggestion(wasGood);
                 try {
-                    Thread.sleep(1950);
+                    Thread.sleep(1940);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
