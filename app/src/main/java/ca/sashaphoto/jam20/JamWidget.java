@@ -1,5 +1,6 @@
 package ca.sashaphoto.jam20;
 
+import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -7,6 +8,7 @@ import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.Toast;
@@ -23,9 +25,34 @@ public class JamWidget extends AppWidgetProvider {
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.jam_widget);
         if(backend.hasSuggestion()) {
-            views.setTextViewText(R.id.widget_text_view, backend.getCurrentSuggestion());
+            AsyncTask<String, Void, String> task = new AsyncTask<String, Void, String>() {
+                @Override
+                protected String doInBackground(String... strings) {
+
+                    return backend.getCurrentSuggestion();
+                }
+
+                @Override
+                protected void onPostExecute(String s) {
+                    views.setTextViewText(R.id.widget_text_view, s);
+                }
+            };
+            task.execute();
         }else{
-            views.setTextViewText(R.id.widget_text_view, backend.fetchNewSuggestion());
+
+            AsyncTask<String, Void, String> task = new AsyncTask<String, Void, String>() {
+                @Override
+                protected String doInBackground(String... strings) {
+
+                    return backend.fetchNewSuggestion();
+                }
+
+                @Override
+                protected void onPostExecute(String s) {
+                    views.setTextViewText(R.id.widget_text_view, s);
+                }
+            };
+            task.execute();
         }
         //views.setOnClickResponse(R.);
 
@@ -52,8 +79,35 @@ public class JamWidget extends AppWidgetProvider {
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.jam_widget);
             if(backend.hasSuggestion()) {
                 views.setTextViewText(R.id.widget_text_view, backend.getCurrentSuggestion());
+                @SuppressLint("StaticFieldLeak") AsyncTask<String, Void, String> task = new AsyncTask<String, Void, String>() {
+                    @Override
+                    protected String doInBackground(String... strings) {
+
+                        return backend.getCurrentSuggestion();
+                    }
+
+                    @Override
+                    protected void onPostExecute(String s) {
+                        System.out.println("Hello from async task " + s);
+                        views.setTextViewText(R.id.widget_text_view, s);
+                    }
+                };
+                task.execute();
             }else{
-                views.setTextViewText(R.id.widget_text_view, backend.fetchNewSuggestion());
+
+                @SuppressLint("StaticFieldLeak") AsyncTask<String, Void, String> task = new AsyncTask<String, Void, String>() {
+                    @Override
+                    protected String doInBackground(String... strings) {
+
+                        return backend.fetchNewSuggestion();
+                    }
+
+                    @Override
+                    protected void onPostExecute(String s) {
+                        views.setTextViewText(R.id.widget_text_view, s);
+                    }
+                };
+                task.execute();
             }
             //views.setOnClickResponse(R.);
 

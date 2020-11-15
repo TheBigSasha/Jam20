@@ -1,5 +1,7 @@
 package ca.sashaphoto.jam20;
 
+import android.annotation.SuppressLint;
+import android.os.AsyncTask;
 import android.os.Build;
 
 import androidx.annotation.NonNull;
@@ -54,7 +56,7 @@ public class JamBackend {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public String fetchNewSuggestion(){
-        if(SuggestionItem.hasCurrent()) SuggestionItem.get().dismiss();
+        if(SuggestionItem.hasCurrent()) SuggestionItem.get().dismiss(false);
         SuggestionItem.create(getSuggestion());
         //TODO: JamWidget.updateAppWidget();
         return SuggestionItem.get().getContent();
@@ -85,6 +87,22 @@ public class JamBackend {
 @RequiresApi(api = Build.VERSION_CODES.O)
 @Entity(tableName = "SuggestedItems")
 class SuggestionItem{
+
+    public static void createAsync(String suggestion) {
+
+        String result;
+        AsyncTask<String, Void, String> task = new AsyncTask<String, Void, String>() {
+            @Override
+            protected String doInBackground(String... strings) {
+                return create(strings[0]).getContent();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+            }
+        };
+         task.execute(suggestion);
+    }
 
     @NonNull
     public Boolean getGood() {
@@ -259,4 +277,16 @@ class SuggestionItem{
         return activeItem;
     }
 
+    public void dismissAsync(boolean wasGood) {
+        @SuppressLint("StaticFieldLeak") AsyncTask<Boolean, Void, Boolean> task = new AsyncTask<Boolean, Void, Boolean>() {
+
+            @Override
+            protected Boolean doInBackground(Boolean... booleans) {
+                dismiss(booleans[0]);
+                return true;
+            }
+        };
+
+        task.execute(isGood);
+    }
 }

@@ -43,7 +43,7 @@
         android:fontFamily="@font/josefinsansheavy"
         android:text="@string/what_to_do"
         android:textAlignment="center"
-        android:textColor="#FFFFFF"
+        android:textColor="@android:color/primary_text_light"
         android:textSize="36sp"
         app:layout_constraintBottom_toTopOf="@+id/button_imbored"
         app:layout_constraintEnd_toEndOf="parent"
