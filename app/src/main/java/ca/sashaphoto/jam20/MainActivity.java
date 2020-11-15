@@ -2,7 +2,12 @@ package ca.sashaphoto.jam20;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.solver.widgets.WidgetContainer;
+import androidx.core.app.ActivityCompat;
 
+import io.radar.sdk.Radar;
+import io.radar.sdk.RadarTrackingOptions;
+
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
@@ -30,6 +35,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Radar.initialize(this, "prj_live_pk_a3e096fbbc21b35c19d43b0abcf8f375f38bd1d5");
+        Radar.startTracking(RadarTrackingOptions.EFFICIENT);
+        //not sure if this next line goes here, but i think it does
+        //ActivityCompat.requestPermissions(activity, new String[] { Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION }, requestCode)
+
         Objects.requireNonNull(this.getSupportActionBar()).hide();
         setContentView(R.layout.activity_main);
         backend = JamBackend.build();

@@ -1,8 +1,13 @@
 package ca.sashaphoto.jam20;
 
+import android.location.Location;
 import android.os.Build;
+import io.radar.sdk.Radar;
 
 import androidx.annotation.RequiresApi;
+import io.radar.*;
+import io.radar.sdk.model.RadarEvent;
+import io.radar.sdk.model.*;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -23,6 +28,32 @@ public class JamBackend {
 
 
     private String getSuggestion() {
+        //abe 4 radar
+
+        Radar.getLocation(new Radar.RadarLocationCallback() {
+            @Override
+            public void onComplete(Radar.RadarStatus status, Location location, boolean stopped) {
+                // do something with location
+                Radar.searchPlaces(
+                        location,
+                        1000, // radius (meters)
+                        new String[]{"starbucks"}, // chains
+                        null, // categories
+                        null, //groups
+                        10, // limit
+                        new Radar.RadarSearchPlacesCallback() {
+                            @Override
+                            public void onComplete(Radar.RadarStatus status, Location location, RadarPlace[] places) {
+                                // do something with places
+                            }
+                        }
+                );
+            }
+        });
+
+
+
+
         String string;
         if (list.size() > 0) {
             int i = rand.nextInt(list.size());
