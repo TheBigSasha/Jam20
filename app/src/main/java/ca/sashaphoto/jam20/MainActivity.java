@@ -69,6 +69,9 @@ public class MainActivity extends AppCompatActivity {
         SuggestionItem item = SuggestionItem.get();
         if(!item.getContent().equals(currentSuggestion)) item = SuggestionItem.pastItems.get(currentSuggestion);
         try{
+            if(item.latitude == 0 || item.longitude == 0 || item.getLocation() == null){
+                throw new IllegalArgumentException("jefjefe");
+            }
             Uri gmmIntentUri = Uri.parse("google.streetview:cbll="+item.latitude+","+item.longitude);
             Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
 // Make the Intent explicit by setting the Google Maps package
@@ -86,15 +89,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getSuggestion(boolean wasGood) {
+        MainActivity act = this;
 
-        Intent intent = new Intent(this, JamWidget.class);
-        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-// Use an array and EXTRA_APPWIDGET_IDS instead of AppWidgetManager.EXTRA_APPWIDGET_ID,
-// since it seems the onUpdate() is only fired on that:
-        int[] ids = AppWidgetManager.getInstance(getApplication())
-                .getAppWidgetIds(new ComponentName(getApplication(), JamWidget.class));
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
-        sendBroadcast(intent);
 
 
         @SuppressLint("StaticFieldLeak")
@@ -125,6 +121,14 @@ return backend.getCurrentSuggestion();
                 animationView.setVisibility(View.GONE);
                 //background.setVisibility(View.VISIBLE);
                 whatToDo.setVisibility(View.VISIBLE);
+                Intent intent = new Intent(act, JamWidget.class);
+                intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+// Use an array and EXTRA_APPWIDGET_IDS instead of AppWidgetManager.EXTRA_APPWIDGET_ID,
+// since it seems the onUpdate() is only fired on that:
+                int[] ids = AppWidgetManager.getInstance(getApplication())
+                        .getAppWidgetIds(new ComponentName(getApplication(), JamWidget.class));
+                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+                sendBroadcast(intent);
             }
 
         };
