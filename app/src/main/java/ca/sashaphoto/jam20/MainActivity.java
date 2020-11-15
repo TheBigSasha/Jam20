@@ -3,7 +3,9 @@ package ca.sashaphoto.jam20;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.solver.widgets.WidgetContainer;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,6 +13,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.net.URL;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
@@ -37,9 +40,26 @@ public class MainActivity extends AppCompatActivity {
 
     private void getSuggestion() {
         boolean wasGood = false;    //TODO: Get this from button
-        backend.fetchNewSuggestion(wasGood);
+
+        @SuppressLint("StaticFieldLeak")
+        AsyncTask<Void, Void, String> updateWasGood = new AsyncTask<Void, Void, String>() {
+            @Override
+            protected String doInBackground(Void... voids) {
+                backend.fetchNewSuggestion(wasGood);
+                return backend.getCurrentSuggestion();
+            }
+
+            @Override
+            protected void onProgressUpdate(Void... update) {
+                whatToDo.setText(backend.getCurrentSuggestion());
+            }
+
+        };
+
+        updateWasGood.execute();
         //Toast.makeText(getBaseContext(),backend.getCurrentSuggestion(),Toast.LENGTH_LONG).show();
-        whatToDo.setText(backend.getCurrentSuggestion());
 
     }
+
+
 }
