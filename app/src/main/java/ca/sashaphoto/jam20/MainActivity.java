@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         backend = JamBackend.build();
         howYouFeltSlider = findViewById(R.id.howYouFeltSlider);
-        button_imbored = findViewById(R.id.button_imbored);
+        button_imbored = findViewById(R.id.button_imbored);         //TODO: Swap with a positive and negative response button!
         editTextFeedback = findViewById(R.id.editTextFeedback);
         whatToDo = findViewById(R.id.textViewWhatToDo);
         button_imbored.setOnClickListener(e -> getSuggestion());
