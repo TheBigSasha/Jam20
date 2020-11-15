@@ -15,15 +15,18 @@ import android.widget.Toast;
  * Implementation of App Widget functionality.
  */
 public class JamWidget extends AppWidgetProvider {
-    private static JamBackend backend = JamBackend.build();
+    private static final JamBackend backend = JamBackend.build();
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
 
-        CharSequence widgetText = context.getString(R.string.appwidget_text);
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.jam_widget);
-        views.setTextViewText(R.id.widget_text_view, backend.getCurrentSuggestion());
+        if(backend.hasSuggestion()) {
+            views.setTextViewText(R.id.widget_text_view, backend.getCurrentSuggestion());
+        }else{
+            views.setTextViewText(R.id.widget_text_view, backend.fetchNewSuggestion());
+        }
         //views.setOnClickResponse(R.);
 
         // Instruct the widget manager to update the widget
@@ -36,6 +39,26 @@ public class JamWidget extends AppWidgetProvider {
         // There may be multiple widgets active, so update all of them
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId);
+            RemoteViews remoteV = new RemoteViews(context.getPackageName(), R.layout.jam_widget);
+
+            Intent intentSync = new Intent(context, JamWidget.class);
+            intentSync.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE); //You need to specify the action for the intent. Right now that intent is doing nothing for there is no action to be broadcasted.
+            PendingIntent pendingSync = PendingIntent.getBroadcast(context,0, intentSync, PendingIntent.FLAG_UPDATE_CURRENT); //You need to specify a proper flag for the intent. Or else the intent will become deleted.
+            remoteV.setOnClickPendingIntent(R.id.button_widget_newsug,pendingSync);
+
+            appWidgetManager.updateAppWidget(appWidgetId, remoteV);
+
+            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.jam_widget);
+            if(backend.hasSuggestion()) {
+                views.setTextViewText(R.id.widget_text_view, backend.getCurrentSuggestion());
+            }else{
+                views.setTextViewText(R.id.widget_text_view, backend.fetchNewSuggestion());
+            }
+            //views.setOnClickResponse(R.);
+
+            // Instruct the widget manager to update the widget
+            appWidgetManager.updateAppWidget(appWidgetId, views);
+
         }
 
         for (int appWidgetId : appWidgetIds) {
@@ -63,7 +86,7 @@ public class JamWidget extends AppWidgetProvider {
 
     @Override
     public void onEnabled(Context context) {
-        // Enter relevant functionality for when the first widget is created
+
     }
 
     @Override
@@ -72,5 +95,6 @@ public class JamWidget extends AppWidgetProvider {
     }
 
     public void openApp(View view){
+
     }
 }

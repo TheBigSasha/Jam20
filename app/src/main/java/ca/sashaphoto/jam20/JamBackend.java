@@ -59,6 +59,10 @@ public class JamBackend {
         if(ref == null) ref = new JamBackend();
         return ref;
     }
+
+    public boolean hasSuggestion() {
+        return SuggestionItem.hasCurrent();
+    }
 }
 @RequiresApi(api = Build.VERSION_CODES.O)
 class SuggestionItem{

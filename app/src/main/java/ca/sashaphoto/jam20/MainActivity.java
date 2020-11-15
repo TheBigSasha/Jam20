@@ -32,10 +32,12 @@ public class MainActivity extends AppCompatActivity {
         editTextFeedback = findViewById(R.id.editTextFeedback);
         whatToDo = findViewById(R.id.textViewWhatToDo);
         button_imbored.setOnClickListener(e -> getSuggestion());
+        getSuggestion();
     }
 
     private void getSuggestion() {
-        Toast.makeText(getBaseContext(),backend.getCurrentSuggestion(),Toast.LENGTH_LONG).show();
+        backend.fetchNewSuggestion();
+        //Toast.makeText(getBaseContext(),backend.getCurrentSuggestion(),Toast.LENGTH_LONG).show();
         whatToDo.setText(backend.getCurrentSuggestion());
 
     }
