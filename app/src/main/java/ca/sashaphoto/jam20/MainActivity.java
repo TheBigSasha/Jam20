@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
             protected String doInBackground(Void... voids) {
                 backend.fetchNewSuggestion(wasGood);
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(1950);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
