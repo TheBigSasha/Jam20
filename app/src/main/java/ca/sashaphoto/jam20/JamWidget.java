@@ -88,7 +88,6 @@ public class JamWidget extends AppWidgetProvider {
 
                     @Override
                     protected void onPostExecute(String s) {
-                        System.out.println("Hello from async task " + s);
                         views.setTextViewText(R.id.widget_text_view, s);
                     }
                 };
