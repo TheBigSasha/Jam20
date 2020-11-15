@@ -2,6 +2,7 @@ package ca.sashaphoto.jam20;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.solver.widgets.WidgetContainer;
+import androidx.fragment.app.FragmentFactory;
 
 import android.annotation.SuppressLint;
 import android.appwidget.AppWidgetManager;
