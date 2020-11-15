@@ -46,11 +46,11 @@ public class JamBackend {
 
 
     private String getSuggestion() {
-
-        Radar.getLocation(new Radar.RadarLocationCallback() {
-            @Override
-            public void onComplete(Radar.RadarStatus status, Location location, boolean stopped) {
-                // do something with location
+        try {
+            Radar.getLocation(new Radar.RadarLocationCallback() {
+                @Override
+                public void onComplete(Radar.RadarStatus status, Location location, boolean stopped) {
+                    // do something with location
                     Radar.searchPlaces(
                             location,
                             1000, // radius (meters)
@@ -68,22 +68,26 @@ public class JamBackend {
                                             l.setLongitude(place.getLocation().getLongitude());
                                             l.setLatitude(place.getLocation().getLatitude());
                                             SuggestionItem item = SuggestionItem.create("Ever explored " + place.getName() + " nearby?").addLocation(place.getLocation());
-                                                    if(item != null && !SuggestionItem.pastItems.containsValue(item) && item.getLocation() != null) {
-                                                        try{
-                                                            item.getLocation().getLatitude();
-                                                        }catch(Exception e){
-                                                            break;
-                                                        }
-                                                        list.add(item);
-                                                    }
+                                            if (item != null && !SuggestionItem.pastItems.containsValue(item) && item.getLocation() != null) {
+                                                try {
+                                                    item.getLocation().getLatitude();
+                                                } catch (Exception e) {
+                                                    break;
+                                                }
+                                                list.add(item);
+                                            }
+                                        }
+                                    } catch (Exception ignored) {
                                     }
-                                }catch(Exception ignored){}
                                 }
                             }
                     );
 
-            }
-        });
+                }
+            });
+        }catch (Exception ex){
+
+        }
 
 
         SuggestionItem item = null;
