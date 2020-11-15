@@ -68,6 +68,8 @@ public class JamBackend {
                                             l.setLongitude(place.getLocation().getLongitude());
                                             l.setLatitude(place.getLocation().getLatitude());
                                             SuggestionItem item = SuggestionItem.create("Ever explored " + place.getName() + " nearby?").addLocation(place.getLocation());
+                                            item.latitude = place.getLocation().getLatitude();
+                                            item.longitude = place.getLocation().getLatitude();
                                             if (item != null && !SuggestionItem.pastItems.containsValue(item) && item.getLocation() != null) {
                                                 try {
                                                     item.getLocation().getLatitude();
@@ -145,7 +147,8 @@ public class JamBackend {
      */
     public String fetchNewSuggestion(boolean wasGood){
         if(SuggestionItem.hasCurrent()) SuggestionItem.get().dismiss(wasGood);
-        SuggestionItem.create(getSuggestion());
+        //SuggestionItem.create(getSuggestion());
+        SuggestionItem si = new SuggestionItem("Have you tried Les Glaceurs? It's nearby!").addLocation(new RadarCoordinate(45.504970, 73.555910));
         //TODO: JamWidget.updateAppWidget();
         return SuggestionItem.get().getContent();
     }
@@ -192,7 +195,14 @@ class SuggestionItem implements Comparable<SuggestionItem> {
     }
 
     public void setLocation(RadarCoordinate location) {
+        this.longitude = location.getLongitude();
+        this.latitude = location.getLatitude();
         this.location = location;
+    }
+
+    public void setLocation(Location location) {
+        this.longitude = location.getLongitude();
+        this.latitude = location.getLatitude();
     }
 
     public RadarCoordinate getLocation() {
@@ -234,6 +244,9 @@ class SuggestionItem implements Comparable<SuggestionItem> {
     public String getFirstDismissed() {
         return firstDismissed;
     }
+
+    public double longitude;
+    public double latitude;
 
     private String firstShown;
         private String firstDismissed;
@@ -300,6 +313,8 @@ class SuggestionItem implements Comparable<SuggestionItem> {
     }
 
     public SuggestionItem addLocation(RadarCoordinate l){
+
+        if(l == null) throw new IllegalArgumentException("location is null, IDIOT");
         this.setLocation(l);
         return this;
     }

@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         SuggestionItem item = SuggestionItem.get();
         if(!item.getContent().equals(currentSuggestion)) item = SuggestionItem.pastItems.get(currentSuggestion);
         try{
-            Uri gmmIntentUri = Uri.parse("google.streetview:cbll="+item.getLocation().getLatitude()+","+item.getLocation().getLongitude());
+            Uri gmmIntentUri = Uri.parse("google.streetview:cbll="+item.latitude+","+item.longitude);
             Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
 // Make the Intent explicit by setting the Google Maps package
 
