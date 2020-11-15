@@ -36,7 +36,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getSuggestion() {
-        backend.fetchNewSuggestion();
+        boolean wasGood = false;    //TODO: Get this from button
+        backend.fetchNewSuggestion(wasGood);
         //Toast.makeText(getBaseContext(),backend.getCurrentSuggestion(),Toast.LENGTH_LONG).show();
         whatToDo.setText(backend.getCurrentSuggestion());
 

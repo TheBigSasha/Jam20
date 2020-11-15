@@ -55,6 +55,19 @@ public class JamBackend {
         return SuggestionItem.get().getContent();
     }
 
+    /**
+     * Fetches a new suggestion, and takes into account the goodness of the last one.
+     * @param wasGood   whether the last one was good
+     * @return          new suggestion
+     */
+    public String fetchNewSuggestion(boolean wasGood){
+        if(SuggestionItem.hasCurrent()) SuggestionItem.get().dismiss(wasGood);
+        SuggestionItem.create(getSuggestion());
+        //TODO: JamWidget.updateAppWidget();
+        return SuggestionItem.get().getContent();
+    }
+
+
     public static JamBackend build(){
         if(ref == null) ref = new JamBackend();
         return ref;
