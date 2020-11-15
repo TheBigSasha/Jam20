@@ -2,6 +2,7 @@ package ca.sashaphoto.jam20;
 
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
+import android.location.Location;
 import android.os.Build;
 
 import androidx.annotation.NonNull;
@@ -9,6 +10,8 @@ import androidx.annotation.RequiresApi;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import io.radar.sdk.Radar;
+import io.radar.sdk.model.RadarPlace;
 
 import java.sql.Time;
 import java.time.LocalDateTime;
@@ -30,6 +33,29 @@ public class JamBackend {
 
 
     private String getSuggestion() {
+        /*
+        Radar.getLocation(new Radar.RadarLocationCallback() {
+            @Override
+            public void onComplete(Radar.RadarStatus status, Location location, boolean stopped) {
+                // do something with location
+                Radar.searchPlaces(
+                        location,
+                        1000, // radius (meters)
+                        new String[]{"starbucks"}, // chains
+                        null, // categories
+                        null, //groups
+                        10, // limit
+                        new Radar.RadarSearchPlacesCallback() {
+                            @Override
+                            public void onComplete(Radar.RadarStatus status, Location location, RadarPlace[] places) {
+                                System.out.println("hello");
+                            }
+                        }
+                );
+            }
+        });*/
+
+
         String string;
         if (list.size() > 0) {
             int i = rand.nextInt(list.size());
@@ -251,6 +277,11 @@ class SuggestionItem{
         activeItem = null;
     }
 
+    public static SuggestionItem getInactive(String message){
+        if(items.containsKey(message)) return items.get(message);
+
+        return new SuggestionItem(message);
+    }
 
     public static SuggestionItem create(String message){
         SuggestionItem item = MainActivity.suggestedItemRepository.mItemDao.getItemByContent(message).getValue();

@@ -2,11 +2,14 @@ package ca.sashaphoto.jam20;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.appwidget.AppWidgetManager;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -16,9 +19,15 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
 import com.airbnb.lottie.LottieAnimationView;
 
+import java.net.URL;
 import java.util.Objects;
+
+import io.radar.sdk.Radar;
 
 public class MainActivity extends AppCompatActivity {
     SeekBar howYouFeltSlider;
@@ -35,6 +44,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        int requestCode = 0;
+        ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION }, requestCode);
+        Radar.initialize(this, "prj_live_pk_a3e096fbbc21b35c19d43b0abcf8f375f38bd1d5");
         Objects.requireNonNull(this.getSupportActionBar()).hide();
         setContentView(R.layout.activity_main);
         backend = JamBackend.build();
