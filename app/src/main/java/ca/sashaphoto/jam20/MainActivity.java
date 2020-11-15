@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     SeekBar howYouFeltSlider;
     JamBackend backend;
     Button button_imbored;
+    Button button_happy;
     EditText editTextFeedback;
     TextView whatToDo;
 
@@ -37,12 +38,13 @@ public class MainActivity extends AppCompatActivity {
         button_imbored = findViewById(R.id.button_imbored);         //TODO: Swap with a positive and negative response button!
         editTextFeedback = findViewById(R.id.editTextFeedback);
         whatToDo = findViewById(R.id.textViewWhatToDo);
-        button_imbored.setOnClickListener(e -> getSuggestion());
-        getSuggestion();
+        button_happy = findViewById(R.id.button_lovedIt);
+        button_imbored.setOnClickListener(e -> getSuggestion(false));
+        button_happy.setOnClickListener(e -> getSuggestion(true));
+        getSuggestion(false);
     }
 
-    private void getSuggestion() {
-        boolean wasGood = false;    //TODO: Get this from button
+    private void getSuggestion(boolean wasGood) {
 
         Intent intent = new Intent(this, JamWidget.class);
         intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);

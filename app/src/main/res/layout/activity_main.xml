@@ -36,6 +36,31 @@
         app:layout_constraintTop_toTopOf="@+id/imageView3" />
 
     <Button
+        android:id="@+id/button_lovedIt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:elevation="14dp"
+        android:ellipsize="middle"
+        android:fontFamily="@font/josefinsansheavy"
+        android:insetLeft="14dp"
+        android:insetTop="14dp"
+        android:insetBottom="14dp"
+        android:padding="16dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:text="Loved it!"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:cornerRadius="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/hostCardView"
+        app:layout_constraintEnd_toStartOf="@+id/button_imbored"
+        app:layout_constraintStart_toStartOf="parent"
+        app:rippleColor="#FFFFFF" />
+
+    <Button
         android:id="@+id/button_imbored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -49,8 +74,7 @@
         android:padding="16dp"
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
-        android:rotationX="29"
-        android:text="new suggestion!"
+        android:text="Something else"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="18sp"
@@ -58,7 +82,7 @@
         app:cornerRadius="10dp"
         app:layout_constraintBottom_toTopOf="@+id/hostCardView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/button_lovedIt"
         app:rippleColor="#FFFFFF" />
 
     <androidx.cardview.widget.CardView
