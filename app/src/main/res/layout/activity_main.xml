@@ -8,7 +8,7 @@
 
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:contentDescription="TODO"
@@ -26,10 +26,11 @@
         app:layout_constraintBottom_toTopOf="@+id/textViewWhatToDo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/imageView3"
+        app:layout_constraintTop_toTopOf="parent"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
-        app:lottie_rawRes="@raw/load" />
+        app:lottie_rawRes="@raw/load"
+        tools:visibility="gone" />
 
 
     <TextView
@@ -46,7 +47,7 @@
         app:layout_constraintBottom_toTopOf="@+id/button_imbored"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/imageView3" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/button_lovedIt"

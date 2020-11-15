@@ -9,13 +9,18 @@ import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.airbnb.lottie.LottieAnimationView;
 
 import java.net.URL;
 import java.util.Objects;
@@ -24,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
     SeekBar howYouFeltSlider;
     JamBackend backend;
     Button button_imbored;
+    LottieAnimationView animationView;
+    ImageView background;
     Button button_happy;
     EditText editTextFeedback;
     TextView whatToDo;
@@ -40,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
         editTextFeedback = findViewById(R.id.editTextFeedback);
         whatToDo = findViewById(R.id.textViewWhatToDo);
         button_happy = findViewById(R.id.button_lovedIt);
+        background = findViewById(R.id.imageView);
+        animationView = findViewById(R.id.animation_view);
         button_imbored.setOnClickListener(e -> getSuggestion(false));
         button_happy.setOnClickListener(e -> getSuggestion(true));
         getSuggestion(false);
@@ -60,14 +69,25 @@ public class MainActivity extends AppCompatActivity {
         @SuppressLint("StaticFieldLeak")
         AsyncTask<Void, Void, String> updateWasGood = new AsyncTask<Void, Void, String>() {
             @Override
+            protected void onPreExecute(){
+                animationView.setVisibility(View.VISIBLE);
+                background.setVisibility(View.GONE);
+                whatToDo.setVisibility(View.GONE);
+            }
+
+            @Override
             protected String doInBackground(Void... voids) {
                 backend.fetchNewSuggestion(wasGood);
-                return backend.getCurrentSuggestion();
+//TODO: Set image from API!
+return backend.getCurrentSuggestion();
             }
 
             @Override
             protected void onPostExecute(String result) {
                 whatToDo.setText(result);
+                animationView.setVisibility(View.GONE);
+                background.setVisibility(View.VISIBLE);
+                whatToDo.setVisibility(View.VISIBLE);
             }
 
         };
