@@ -147,8 +147,8 @@ public class JamBackend {
      */
     public String fetchNewSuggestion(boolean wasGood){
         if(SuggestionItem.hasCurrent()) SuggestionItem.get().dismiss(wasGood);
-        //SuggestionItem.create(getSuggestion());
-        SuggestionItem si = new SuggestionItem("Have you tried Les Glaceurs? It's nearby!").addLocation(new RadarCoordinate(45.504970, 73.555910));
+        SuggestionItem.create(getSuggestion());
+        //SuggestionItem si = new SuggestionItem("Have you tried Les Glaceurs? It's nearby!").addLocation(new RadarCoordinate(45.504970, 73.555910));
         //TODO: JamWidget.updateAppWidget();
         return SuggestionItem.get().getContent();
     }
