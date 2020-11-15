@@ -68,7 +68,12 @@ public class JamBackend {
                                             l.setLongitude(place.getLocation().getLongitude());
                                             l.setLatitude(place.getLocation().getLatitude());
                                             SuggestionItem item = SuggestionItem.create("Ever explored " + place.getName() + " nearby?").addLocation(place.getLocation());
-                                                    if(item != null && !SuggestionItem.pastItems.containsValue(item)) {
+                                                    if(item != null && !SuggestionItem.pastItems.containsValue(item) && item.getLocation() != null) {
+                                                        try{
+                                                            item.getLocation().getLatitude();
+                                                        }catch(Exception e){
+                                                            break;
+                                                        }
                                                         list.add(item);
                                                     }
                                     }
