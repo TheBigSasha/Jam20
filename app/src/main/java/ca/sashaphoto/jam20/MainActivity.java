@@ -10,6 +10,7 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.media.Image;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -65,9 +66,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void actionFromSuggestion(String currentSuggestion) {
-        Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
-        intent.putExtra(SearchManager.QUERY, currentSuggestion); // query contains search string
-        startActivity(intent);
+        SuggestionItem item = SuggestionItem.get();
+        if(!item.getContent().equals(currentSuggestion)) item = SuggestionItem.pastItems.get(currentSuggestion);
+        try{
+            Uri gmmIntentUri = Uri.parse("google.streetview:cbll="+item.getLocation().getLatitude()+","+item.getLocation().getLongitude());
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+// Make the Intent explicit by setting the Google Maps package
+
+            mapIntent.setPackage("com.google.android.apps.maps");
+
+// Attempt to start an activity that can handle the Intent
+            startActivity(mapIntent);
+        }catch (Exception ignored){
+            System.out.println(ignored.getMessage());
+            Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
+            intent.putExtra(SearchManager.QUERY, currentSuggestion); // query contains search string
+            startActivity(intent);
+        }
     }
 
     private void getSuggestion(boolean wasGood) {

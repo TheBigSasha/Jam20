@@ -3,13 +3,11 @@
     <font
         android:fontStyle="italic"
         android:fontWeight="1000"
-        android:fontVariationSettings="'wght' 1500"
         android:font="@font/josefinsansvariableitalic" />
 
 
     <font
         android:fontStyle="normal"
         android:fontWeight="1000"
-        android:fontVariationSettings="'wght' 1500"
         android:font="@font/josefinsansvariable" />
 </font-family>

@@ -11,11 +11,13 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import io.radar.sdk.Radar;
+import io.radar.sdk.model.RadarCoordinate;
 import io.radar.sdk.model.RadarPlace;
 
 import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class JamBackend {
     private static final String[] hardCodes = new String[]{"Text a friend", "Make a pumpkin pie", "Watch a Movie" ,"Watch The Bee Movie", "Learn what a REST API is", "Go on a walk",
@@ -27,49 +29,87 @@ public class JamBackend {
 
     private static final Random rand = new Random(System.nanoTime());
 
-    List<String> list = new LinkedList<>(Arrays.asList(hardCodes));
+    ConcurrentLinkedDeque<SuggestionItem> list = new ConcurrentLinkedDeque<>();
+    static         ArrayList<SuggestionItem> hardCodeList = new ArrayList<>();
+
+
+    private static void fillHardCodes(){
+        for(String s : hardCodes){
+            hardCodeList.add(new SuggestionItem(s));
+        }
+    }
+
+
+
 
     private static JamBackend ref = new JamBackend();
 
 
     private String getSuggestion() {
-        /*
+
         Radar.getLocation(new Radar.RadarLocationCallback() {
             @Override
             public void onComplete(Radar.RadarStatus status, Location location, boolean stopped) {
                 // do something with location
-                Radar.searchPlaces(
-                        location,
-                        1000, // radius (meters)
-                        new String[]{"starbucks"}, // chains
-                        null, // categories
-                        null, //groups
-                        10, // limit
-                        new Radar.RadarSearchPlacesCallback() {
-                            @Override
-                            public void onComplete(Radar.RadarStatus status, Location location, RadarPlace[] places) {
-                                System.out.println("hello");
+                    Radar.searchPlaces(
+                            location,
+                            1000, // radius (meters)
+                            new String[]{"starbucks"}, // chains
+                            //, "religion", "outdoor-places", "food-beverage", "arts-entertainment"
+                            null, // categories
+                            null, //groups
+                            10, // limit
+                            new Radar.RadarSearchPlacesCallback() {
+                                @Override
+                                public void onComplete(Radar.RadarStatus status, Location location, RadarPlace[] places) {
+                                    try {
+                                        for (RadarPlace place : places) {
+                                            Location l = new Location(location.getProvider());
+                                            l.setLongitude(place.getLocation().getLongitude());
+                                            l.setLatitude(place.getLocation().getLatitude());
+                                            SuggestionItem item = SuggestionItem.create("Ever explored " + place.getName() + " nearby?").addLocation(place.getLocation());
+                                                    if(item != null && !SuggestionItem.pastItems.containsValue(item)) {
+                                                        list.add(item);
+                                                    }
+                                    }
+                                }catch(Exception ignored){}
+                                }
                             }
-                        }
-                );
+                    );
+
             }
-        });*/
+        });
 
 
-        String string;
-        if (list.size() > 0) {
-            int i = rand.nextInt(list.size());
-            string = list.get(i);
-            list.remove(i);
+        SuggestionItem item = null;
+
+        int counter = 0;
+        while((item == null || SuggestionItem.wasShown(item.getContent())) && counter < 10){
+
+            ArrayList<SuggestionItem> tempList = new ArrayList();
+            for(SuggestionItem si : list){
+                if(si != null) tempList.add(si);
+            }
+            if (!tempList.isEmpty()) {
+                item = tempList.get(tempList.size()-1);
+                tempList.remove(item);
+                list.remove(item);
+            }
+            //TODO: Check past entries with persistence! For now we just save a database and do nothing with it.
+            else {
+                if(!hardCodeList.isEmpty()) {
+                    int i = rand.nextInt(hardCodeList.size());
+                    item = hardCodeList.get(i);
+                    hardCodeList.remove(item);
+                }else{
+                    fillHardCodes();
+                    return getSuggestion();
+                }
+            }
+            counter++;
         }
-        //TODO: Check past entries with persistence! For now we just save a database and do nothing with it.
-        else {
-            list = new LinkedList<>(Arrays.asList(hardCodes));
-            int i = rand.nextInt(list.size());
-            string = list.get(i);
-            list.remove(i);
-        }
-        return string;
+        item.show();
+        return item.getContent();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -113,7 +153,9 @@ public class JamBackend {
 }
 @RequiresApi(api = Build.VERSION_CODES.O)
 @Entity(tableName = "SuggestedItems")
-class SuggestionItem{
+class SuggestionItem implements Comparable<SuggestionItem> {
+
+    static  HashMap<String, SuggestionItem> pastItems = new HashMap<>();
 
     public static void createAsync(String suggestion) {
 
@@ -140,6 +182,15 @@ class SuggestionItem{
         isGood = good;
     }
 
+    public void setLocation(RadarCoordinate location) {
+        this.location = location;
+    }
+
+    public RadarCoordinate getLocation() {
+        return location;
+    }
+
+    private transient RadarCoordinate location;
 
 
 
@@ -177,7 +228,26 @@ class SuggestionItem{
 
     private String firstShown;
         private String firstDismissed;
-        private static SuggestionItem activeItem;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SuggestionItem that = (SuggestionItem) o;
+        return Objects.equals(location, that.location) &&
+                Objects.equals(isGood, that.isGood) &&
+                Objects.equals(created, that.created) &&
+                Objects.equals(firstShown, that.firstShown) &&
+                Objects.equals(firstDismissed, that.firstDismissed) &&
+                content.equals(that.content);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(location, isGood, created, firstShown, firstDismissed, content);
+    }
+
+    private static SuggestionItem activeItem;
     @PrimaryKey
     @NonNull
     @ColumnInfo(name = "content")
@@ -185,6 +255,7 @@ class SuggestionItem{
 
     public SuggestionItem(@NonNull Boolean isGood ){
         this.isGood = isGood;
+
     }
 
 
@@ -212,34 +283,24 @@ class SuggestionItem{
 
         if(activeItem != null) activeItem.dismiss();
         activeItem = this;
+
     }
 
     public static boolean hasCurrent(){
         return activeItem != null;
     }
 
+    public SuggestionItem addLocation(RadarCoordinate l){
+        this.setLocation(l);
+        return this;
+    }
+
     public String show(){
         if(firstShown == null){
             firstShown = String.valueOf(LocalDateTime.now().toLocalTime());
         }
-        activeItem = this;
+        setActive();
         return content;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        SuggestionItem that = (SuggestionItem) o;
-        return Objects.equals(created, that.created) &&
-                Objects.equals(firstShown, that.firstShown) &&
-                Objects.equals(firstDismissed, that.firstDismissed) &&
-                content.equals(that.content);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(created, firstShown, firstDismissed, content);
     }
 
     public boolean isActive(){
@@ -277,11 +338,7 @@ class SuggestionItem{
         activeItem = null;
     }
 
-    public static SuggestionItem getInactive(String message){
-        if(items.containsKey(message)) return items.get(message);
 
-        return new SuggestionItem(message);
-    }
 
     public static SuggestionItem create(String message){
         SuggestionItem item = MainActivity.suggestedItemRepository.mItemDao.getItemByContent(message).getValue();
@@ -297,16 +354,22 @@ class SuggestionItem{
     private void setActive() {
         firstDismissed = null;
         firstShown = null;
+        pastItems.put(this.getContent(),this);
         if(activeItem != null) {
             activeItem.dismiss();
             activeItem = this;
         }
-
-        MainActivity.suggestedItemRepository.delete(this);
-    }
+        try {
+            MainActivity.suggestedItemRepository.delete(this);
+        }catch (Exception ignored){}
+        }
 
     public static SuggestionItem get(){
         return activeItem;
+    }
+
+    public static boolean wasShown(String message){
+        return pastItems.containsKey(message);
     }
 
     public void dismissAsync(boolean wasGood) {
@@ -320,5 +383,10 @@ class SuggestionItem{
         };
 
         task.execute(isGood);
+    }
+
+    @Override
+    public int compareTo(SuggestionItem o) {
+        return (int) (o.getTimeCreated().getTime() - this.getTimeCreated().getTime());
     }
 }
