@@ -3,6 +3,7 @@ package ca.sashaphoto.jam20;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.app.SearchManager;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -47,7 +48,14 @@ public class MainActivity extends AppCompatActivity {
         animationView = findViewById(R.id.animation_view);
         button_imbored.setOnClickListener(e -> getSuggestion(false));
         button_happy.setOnClickListener(e -> getSuggestion(true));
+        whatToDo.setOnClickListener(e -> actionFromSuggestion(String.valueOf(whatToDo.getText())));
         getSuggestion(false);
+    }
+
+    private void actionFromSuggestion(String currentSuggestion) {
+        Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
+        intent.putExtra(SearchManager.QUERY, currentSuggestion); // query contains search string
+        startActivity(intent);
     }
 
     private void getSuggestion(boolean wasGood) {
