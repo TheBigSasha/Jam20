@@ -23,16 +23,4 @@
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="30sp" />
-
-    <Button
-        android:id="@+id/button_widget_newsug"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/widget_text_view"
-        android:layout_alignEnd="@+id/widget_text_view"
-        android:layout_alignBottom="@+id/widget_text_view"
-        android:layout_marginStart="0dp"
-        android:layout_marginEnd="0dp"
-        android:layout_marginBottom="0dp"
-        android:text="New Suggestion!" />
 </RelativeLayout>

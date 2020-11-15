@@ -39,12 +39,13 @@ public class JamWidget extends AppWidgetProvider {
         // There may be multiple widgets active, so update all of them
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId);
+
             RemoteViews remoteV = new RemoteViews(context.getPackageName(), R.layout.jam_widget);
 
-            Intent intentSync = new Intent(context, JamWidget.class);
+        /*    Intent intentSync = new Intent(context, JamWidget.class);
             intentSync.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE); //You need to specify the action for the intent. Right now that intent is doing nothing for there is no action to be broadcasted.
             PendingIntent pendingSync = PendingIntent.getBroadcast(context,0, intentSync, PendingIntent.FLAG_UPDATE_CURRENT); //You need to specify a proper flag for the intent. Or else the intent will become deleted.
-            remoteV.setOnClickPendingIntent(R.id.button_widget_newsug,pendingSync);
+            remoteV.setOnClickPendingIntent(R.id.widget_text_view,pendingSync);*/
 
             appWidgetManager.updateAppWidget(appWidgetId, remoteV);
 
@@ -56,12 +57,6 @@ public class JamWidget extends AppWidgetProvider {
             }
             //views.setOnClickResponse(R.);
 
-            // Instruct the widget manager to update the widget
-            appWidgetManager.updateAppWidget(appWidgetId, views);
-
-        }
-
-        for (int appWidgetId : appWidgetIds) {
             try {
                 Intent intent = new Intent("android.intent.action.MAIN");
                 intent.addCategory("android.intent.category.LAUNCHER");
@@ -70,8 +65,6 @@ public class JamWidget extends AppWidgetProvider {
                 intent.setComponent(new ComponentName(context.getPackageName(), MainActivity.class.getName()));
                 PendingIntent pendingIntent = PendingIntent.getActivity(
                         context, 0, intent, 0);
-                RemoteViews views = new RemoteViews(context.getPackageName(),
-                        R.layout.jam_widget);
                 views.setOnClickPendingIntent(R.id.widget_text_view, pendingIntent);
                 appWidgetManager.updateAppWidget(appWidgetId, views);
             } catch (ActivityNotFoundException e) {
@@ -79,8 +72,15 @@ public class JamWidget extends AppWidgetProvider {
                         "There was a problem loading the application: ",
                         Toast.LENGTH_SHORT).show();
             }
+            // Instruct the widget manager to update the widget
+            appWidgetManager.updateAppWidget(appWidgetId, views);
 
         }
+
+        /*for (int appWidgetId : appWidgetIds) {
+
+
+        }*/
 
     }
 

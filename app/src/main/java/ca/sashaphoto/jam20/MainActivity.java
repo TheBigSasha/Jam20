@@ -4,7 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.solver.widgets.WidgetContainer;
 
 import android.annotation.SuppressLint;
+import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.Button;
@@ -41,6 +44,16 @@ public class MainActivity extends AppCompatActivity {
     private void getSuggestion() {
         boolean wasGood = false;    //TODO: Get this from button
 
+        Intent intent = new Intent(this, JamWidget.class);
+        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+// Use an array and EXTRA_APPWIDGET_IDS instead of AppWidgetManager.EXTRA_APPWIDGET_ID,
+// since it seems the onUpdate() is only fired on that:
+        int[] ids = AppWidgetManager.getInstance(getApplication())
+                .getAppWidgetIds(new ComponentName(getApplication(), JamWidget.class));
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+        sendBroadcast(intent);
+
+
         @SuppressLint("StaticFieldLeak")
         AsyncTask<Void, Void, String> updateWasGood = new AsyncTask<Void, Void, String>() {
             @Override
@@ -50,8 +63,8 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            protected void onProgressUpdate(Void... update) {
-                whatToDo.setText(backend.getCurrentSuggestion());
+            protected void onPostExecute(String result) {
+                whatToDo.setText(result);
             }
 
         };
